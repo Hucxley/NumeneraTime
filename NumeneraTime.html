@@ -1,0 +1,53 @@
+<head>
+    <title>Numenera Weather App</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+      <div class="jumbotron">
+        <h1>Numenera Weather Information</h1>
+        <div class="weather-display">
+          <span class="inline"> {{>clock}} {{timer}} {{>weather}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      {{>navigation}}
+    </div>
+</body>
+
+
+<template name="clock">
+  <!-- Content display for timer -->
+  <div class="calendar-display stroke" id="timeKeeper">
+      <h2 id="counter-months"><span id="divider1">/</span><span id="counter-days"></span><span id="divider2">/</span><span id="counter-years"></span>
+      <span id="counter-hours"></span><span id="divider3">:</span><span id="counter-minutes"></span><span id="divider4">:</span><span id="counter-seconds"></span></h2>
+  </div>
+</template>
+
+<template name="navigation">
+  <!-- Button group -->
+  <div class="nav navbar">
+      <button type="button" class="btn btn-primary resume-game-state" >Resume Game</button>
+      <div class="btn btn-default new-game" onclick="newGame()">New Game</div>
+      <div class="btn btn-success start-clock" onclick="start()">Start Game</div>
+      <div class="btn btn-warning pause-clock" onclick="pauseCounter()">Pause Game</div>
+      <div class="btn btn-info add-combat-round" onclick="addRound(1)">Add 1 Combat Round</div>
+      <div class="btn btn-info toggle-travel-time" onclick="travelTime()">Toggle Travel Time</div>
+      <div class="btn-group">
+          <button class="btn dropdown-toggle btn-info" data-toggle="dropdown">Quick Time <span class="caret"></span></button>
+          <ul class="dropdown-menu">
+              <li><a href="#" class="travel-half-day">Half-day Travel</a></li>
+              <li><a href="#" class="travel-one-day">One day's Travel</a></li>
+              <li><a href="#" class="pass-the-time">Pass the Time</a></li>
+          </ul>
+      </div><!-- /btn-group -->
+      <button type="button" class="btn btn-danger save-game-state" onclick="getSeedTime()">Save Game</button>
+  </div>
+</template>
+
+
+<template name="weather">
+  <h2><i class="wi wi-night-sleet"></i></h2>
+
+</template>

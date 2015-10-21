@@ -1,0 +1,59 @@
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:200,300,400);
+
+* {
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+
+.jumbotron{
+    text-align: center;
+
+}
+
+.nav, .navbar{
+    padding-top: 2px;
+    align-content: center;
+}
+
+.pageHeader {
+    font-family: 'Roboto';
+    font-size: 36px;
+    font-weight: bolder;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#main {
+  background-image: url();
+  background-repeat: no-repeat;
+  background-position: center center;
+  -webkit-background-size: cover; /* For WebKit*/
+  -moz-background-size: cover; /* Mozilla*/
+  -o-background-size: cover; /* Opera*/
+  background-size: cover; /* Generic*/
+  padding: 20px;
+}
+
+.calendar-display{
+    color: white;
+    font-size: 50px;
+    text-align: center;
+    font-family: Acme;
+}
+
+h1 {
+    text-align: center;
+}
+
+.stroke {
+ color: white;
+ -webkit-text-stroke: 1px #000;
+}/* CSS declarations go here */
