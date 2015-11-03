@@ -9,18 +9,28 @@ html {
     height: 100%;
     width: 100%;
     margin: 0;
-    padding: 0;
     font-family: 'Yanone Kaffeesatz', sans-serif;
+    background-repeat: no-repeat;
+    background-position: center center;
+    -webkit-background-size: cover; /* For WebKit*/
+    -moz-background-size: cover; /* Mozilla*/
+    -o-background-size: cover; /* Opera*/
+    background-size: cover; /* Generic*/
+    padding: 20px;
 }
 
 .jumbotron{
     text-align: center;
+    padding-bottom: 5px;
+    margin-bottom: 1px;
 
 }
 
 .nav, .navbar{
-    padding-top: 2px;
-    align-content: center;
+  margin-top: 1px;
+  padding-top: 2px;
+  padding-right: 5px;
+  align-content: center;
 }
 
 .pageHeader {
@@ -31,19 +41,8 @@ html {
     margin-bottom: 20px;
 }
 
-#main {
-  background-image: url();
-  background-repeat: no-repeat;
-  background-position: center center;
-  -webkit-background-size: cover; /* For WebKit*/
-  -moz-background-size: cover; /* Mozilla*/
-  -o-background-size: cover; /* Opera*/
-  background-size: cover; /* Generic*/
-  padding: 20px;
-}
-
 .calendar-display{
-    color: white;
+    color: black;
     font-size: 50px;
     text-align: center;
     font-family: Acme;
@@ -53,7 +52,7 @@ h1 {
     text-align: center;
 }
 
-.stroke {
- color: white;
+.dark-stroke {
+ color: black;
  -webkit-text-stroke: 1px #000;
 }/* CSS declarations go here */
