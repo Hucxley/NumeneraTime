@@ -22,3 +22,5 @@ twbs:bootstrap
 noxu:weather-icons
 bevanhunt:leaflet
 frozeman:reactive-timer
+accounts-ui
+accounts-password
