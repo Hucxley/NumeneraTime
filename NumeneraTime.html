@@ -10,7 +10,7 @@
         <div class="weather-display">
           <span class="inline"> {{>clock}} {{>weather}}</span>
         </div>
-        {{>loginButtons}}
+        {{>loginButtons}}  GameID: {{>gameID}}
       </div>
     </div>
     <div class="container-fluid">
@@ -18,6 +18,9 @@
     </div>
 </body>
 
+<template name="gameID">
+  <span class="gameID-display">{{gameID.gameId}}</span>
+</template>
 
 <template name="clock">
   <!-- Content display for timer -->
@@ -29,15 +32,15 @@
 <template name="navigation">
   <!-- Button group -->
   <div class="nav navbar">
-      <button type="button" class="btn btn-primary resume-game-state" >Resume Game</button>
       <button type="button" class="btn btn-default new-game">New Game</button>
+      <button type="button" class="btn btn-primary resume-game-state" >Resume Game</button>
       <button type="button" class="btn btn-success start-clock">Start Game</button>
       <button type="button" class="btn btn-warning pause-clock">Pause Game</button>
       <button type="button" class="btn btn-info add-combat-round" onclick="addRound(1)">Add 1 Combat Round</button>
-      <button type="button" class="btn btn-info toggle-travel-time">Toggle Travel Time</button>
       <div class="btn-group">
           <button class="btn dropdown-toggle btn-info" data-toggle="dropdown">Quick Time <span class="caret"></span></button>
           <ul class="dropdown-menu">
+              <li><a href="#" class="toggle-travel-time">Toggle Travel Time</a></li>
               <li><a href="#" class="travel-half-day">Half-day Travel</a></li>
               <li><a href="#" class="travel-one-day">One day's Travel</a></li>
               <li><a href="#" class="pass-the-time">Pass the Time</a></li>

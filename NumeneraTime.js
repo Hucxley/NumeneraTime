@@ -8,7 +8,7 @@ if (Meteor.isClient) {
   var timeDep = new Deps.Dependency(); // !!!
   var timeValue;
   var timeInterval;
-
+  var gameID;
   var counter = 0;
   var isActive = false;
   var intervalModifier;
@@ -58,28 +58,30 @@ if (Meteor.isClient) {
 
     },
 
-    start: function() {
-      clearInterval(intervalHandler);
-      if (!isActive) {
-        isActive = true;
+    backgroundImageChanger: function(month, day, hour, minute) {
+      var clearNightImgUrl =
+        'public/Screen-Shot-2014-10-20-at-7.29.52-PM.png';
+      var clearDayImgUrl =
+        'public/clouds-colorful-colourful-1029.jpg';
+      var starryNightImgUrl =
+        'public/1409058910637_wps_9_PIC_BY_MATT_PAYNE_CATERS.jpg';
+      var stormyDayImgUrl =
+        'public/pct-section-k-83-granite-chief-wilderness.jpg';
+      if ((hour >= 22 || hour < 4) && !pmFlag) {
+        pmFlag = true;
+        //console.log("image shift to night");
+        $('body').css('background-image',
+          'url(public/Screen-Shot-2014-10-20-at-7.29.52-PM.png) no-repeat center center cover;'
+        );
+      } else if ((hour > 4 && hour < 22) && pmFlag) {
+        pmFlag = false;
+        //console.log('image shift to day');
+        $('body').css('background-image',
+          'url(public/clouds-colorful-colourful-1029.jpg) no-repeat center center cover;'
+        );
+      } else {
+        // change nothing
       }
-      intervalHandler = Meteor.setInterval(
-        numeneraTimeLib.count,
-        intervalModifier);
-
-    },
-
-    count: function() {
-
-      if (isActive) {
-
-        counter++;
-        timeDisplay = timeNow + counter;
-        displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
-        numeneraTimeLib.update(displayTime);
-
-      }
-
     },
 
     convertToDisplay: function(timeNow) {
@@ -108,17 +110,21 @@ if (Meteor.isClient) {
       timeValue = months + "/" + days + "/" + years + "  " + hours + ":" +
         minutes + ":" + seconds;
 
-
       return currentTime;
-
 
     },
 
-    pauseCounter: function() {
+    count: function() {
 
-      isActive = false;
-      clearInterval(intervalHandler);
-      intervalModifier = 1000;
+      if (isActive) {
+
+        counter++;
+        timeDisplay = timeNow + counter;
+        displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
+        numeneraTimeLib.update(displayTime);
+
+      }
+
     },
 
     initAttributes: function(n) {
@@ -129,7 +135,36 @@ if (Meteor.isClient) {
       intervalHandler = Meteor.setInterval(
         numeneraTimeLib.count,
         intervalModifier);
+      Session.set('timeValue', timeNow);
       return timeNow;
+
+    },
+
+    newGame: function() {
+      if (typeof(intervalHandler) !== 'undefined') {
+        clearInterval(intervalHandler);
+      }
+      timeNow = numeneraTimeLib.initAttributes();
+      displayTime = numeneraTimeLib.convertToDisplay(timeNow);
+      numeneraTimeLib.update(displayTime);
+      return timeNow;
+    },
+
+    pauseCounter: function() {
+
+      isActive = false;
+      clearInterval(intervalHandler);
+      intervalModifier = 1000;
+    },
+
+    start: function() {
+      clearInterval(intervalHandler);
+      if (!isActive) {
+        isActive = true;
+      }
+      intervalHandler = Meteor.setInterval(
+        numeneraTimeLib.count,
+        intervalModifier);
 
     },
 
@@ -146,15 +181,16 @@ if (Meteor.isClient) {
     travelTime: function() {
       if (intervalModifier === 1) {
         intervalModifier = 1000;
-        console.log(intervalModifier);
+        //console.log(intervalModifier);
         numeneraTimeLib.start();
       } else {
         intervalModifier = 1;
-        console.log(intervalModifier);
+        //console.log(intervalModifier);
         numeneraTimeLib.start();
       }
 
     },
+
     update: function(currentTime) {
       numeneraTimeLib.backgroundImageChanger(
         currentTime.months,
@@ -164,38 +200,7 @@ if (Meteor.isClient) {
       timeDep.changed();
     },
 
-    backgroundImageChanger: function(month, day, hour, minute) {
-      var clearNightImgUrl =
-        'public/Screen-Shot-2014-10-20-at-7.29.52-PM.png';
-      var clearDayImgUrl =
-        'public/clouds-colorful-colourful-1029.jpg';
-      var starryNightImgUrl =
-        'public/1409058910637_wps_9_PIC_BY_MATT_PAYNE_CATERS.jpg';
-      var stormyDayImgUrl =
-        'public/pct-section-k-83-granite-chief-wilderness.jpg';
-      if (hour >= 22 || hour < 4) {
-        pmFlag = true;
-        console.log("image shift to night");
-        $('body').css('background-image',
-          'url(public/Screen-Shot-2014-10-20-at-7.29.52-PM.png) no-repeat center center cover;'
-        );
-      } else {
-        pmFlag = false;
-        console.log('image shift to day');
-        $('body').css('background-image',
-          'url(public/clouds-colorful-colourful-1029.jpg) no-repeat center center cover;'
-        );
-      }
-    },
-    newGame: function() {
-      if (typeof(intervalHandler) !== 'undefined') {
-        clearInterval(intervalHandler);
-      }
-      timeNow = numeneraTimeLib.initAttributes();
-      displayTime = numeneraTimeLib.convertToDisplay(timeNow);
-      numeneraTimeLib.update(displayTime);
-      return timeNow;
-    },
+
   };
 
   Template.clock.created = function() {
@@ -206,7 +211,27 @@ if (Meteor.isClient) {
   Template.clock.helpers({
     time: function() {
       timeDep.depend();
+      console.log('stored session time: ' + Session.get('timeValue'));
+      console.log('current Meteor.userId(): ' + Meteor.userId());
       return timeValue;
+    },
+  });
+
+  Template.gameID.helpers({
+    gameID: function() {
+      var gameId = Session.get('gameID');
+      console.log(gameId);
+      var currentUserId = Meteor.userId();
+      var searchResult = GamesList.findOne({
+        createdBy: currentUserId,
+        gameId: this.gameID
+      }, {
+        fields: {
+          gameId: 1
+        }
+      });
+      console.log(searchResult);
+      return searchResult;
     }
   });
 
@@ -222,24 +247,30 @@ if (Meteor.isClient) {
   });
 
   Template.navigation.helpers({
-    fetchSavedGameTime: function() {
+    currentGameTime: function() {
+      console.log("navigation fetching save time");
       var currentUserId = Meteor.userId();
-      var searchResult = GamesList.find({
-        createdBy: currentUserId
+      console.log('navigation logging currentUserId: ' + currentUserId);
+      var searchResult = GamesList.findOne({
+        createdBy: currentUserId,
+        gameId: this.gameID
       }, {
         fields: {
           gameTime: 1
         }
       });
-      return searchResult;
-
+      console.log(searchResult);
+      //return searchResult;
     }
+
 
   });
 
   Template.navigation.events({
     'click .new-game': function() {
       var gameID = uuid.tiny();
+      Session.set('gameId', gameID)
+      console.log(gameID);
       var currentUserId = Meteor.userId();
       timeNow = numeneraTimeLib.newGame();
       GamesList.insert({
@@ -298,21 +329,25 @@ if (Meteor.isClient) {
       console.log("You clicked to save game.")
         // Write seed time to mongo Games Collection
       var currentUserId = Meteor.getId();
+      var currentTime = Session.get('timeValue');
+      //timeDisplay = numeneraTimeLib.fetchSavedGameTime();
+      console.log(timeDisplay);
       GamesList.update({
-        _id: GameID,
-        createdBy: currentUserId
+        _id: this._id,
+        createdBy: currentUserId,
+        gameId: this.gameID
       }, {
-        gameTime: timeDisplay
+        gameTime: currentTime
       });
     },
     'click .resume-game-state': function() {
       //get seed value from Games Collection for this user;
-      console.log("YOu clicked to resume a previous game.")
-      seed = fetchSavedGameTime().gameTime;
-      console.log(seed);
-      console.log(seed.gameTime);
+      console.log("You clicked to resume a previous game.")
+      seed = timeDisplay;
+      //console.log(seed);
+
       //timeNow = initAttributes(seed);
-      //console.log("seed set: " + timeNow);
+      console.log("seed set: " + seed);
       //displayTime = numeneraTimeLib.convertToDisplay(timeNow);
       //numeneraTimeLib.update(displayTime);
     }
