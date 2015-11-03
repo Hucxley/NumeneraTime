@@ -34,28 +34,23 @@ if (Meteor.isClient) {
         counter += n;
         timeDisplay = timeNow + counter;
         displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
-        numeneraTimeLib.update(displayTime);
       } else {
         if (pmFlag) {
           while (pmFlag) {
             counter += 1000;
             timeDisplay = timeNow + counter;
             displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
-            numeneraTimeLib.update(displayTime);
           }
-          numeneraTimeLib.pauseCounter();
         } else {
           while (!pmFlag) {
             counter += 1000;
             timeDisplay = timeNow + counter;
             displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
-            numeneraTimeLib.update(displayTime);
           }
-          numeneraTimeLib.pauseCounter();
         }
       }
-
-
+      numeneraTimeLib.update(displayTime);
+      numeneraTimeLib.pauseCounter();
     },
 
     backgroundImageChanger: function(month, day, hour, minute) {
@@ -115,29 +110,42 @@ if (Meteor.isClient) {
     },
 
     count: function() {
-
       if (isActive) {
-
         counter++;
         timeDisplay = timeNow + counter;
         displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
         numeneraTimeLib.update(displayTime);
-
+        Session.set('gameTime',timeDisplay);
       }
-
     },
 
     initAttributes: function(n) {
-      seed = 0;
-      timeNow = numeneraTimeLib.timeConstruct(n);
+      var gameId;
+      var timeSeed;
+      var recordId;
+      if(Meteor.userId()){
+        gameInfo = GamesList.findOne({
+          createdBy: Meteor.userId()
+        }, {fields: {gameId: 1, gameTime: 1, currentWeather: 1, joinedPlayers: 1}
+      });
+      gameId = gameInfo.gameId;
+      timeSeed = gameInfo.gameTime;
+      Session.set('gameId', gameId);
+      Session.set('gameTime', timeSeed);
+      seed = timeSeed;
+      //console.log('seed value: '+seed);
+      timeNow = numeneraTimeLib.timeConstruct(seed);
+      }else{
+        seed = 0;
+        timeNow = numeneraTimeLib.timeConstruct(n);
+      }
       intervalModifier = 1000;
       pmFlag = false;
       intervalHandler = Meteor.setInterval(
         numeneraTimeLib.count,
         intervalModifier);
-      Session.set('timeValue', timeNow);
+        console.log('time at end of init: ' +timeNow);
       return timeNow;
-
     },
 
     newGame: function() {
@@ -151,7 +159,6 @@ if (Meteor.isClient) {
     },
 
     pauseCounter: function() {
-
       isActive = false;
       clearInterval(intervalHandler);
       intervalModifier = 1000;
@@ -165,7 +172,6 @@ if (Meteor.isClient) {
       intervalHandler = Meteor.setInterval(
         numeneraTimeLib.count,
         intervalModifier);
-
     },
 
     timeConstruct: function(seed) {
@@ -188,7 +194,6 @@ if (Meteor.isClient) {
         //console.log(intervalModifier);
         numeneraTimeLib.start();
       }
-
     },
 
     update: function(currentTime) {
@@ -199,8 +204,6 @@ if (Meteor.isClient) {
         currentTime.minutes);
       timeDep.changed();
     },
-
-
   };
 
   Template.clock.created = function() {
@@ -211,26 +214,30 @@ if (Meteor.isClient) {
   Template.clock.helpers({
     time: function() {
       timeDep.depend();
-      console.log('stored session time: ' + Session.get('timeValue'));
-      console.log('current Meteor.userId(): ' + Meteor.userId());
       return timeValue;
     },
   });
 
   Template.gameID.helpers({
     gameID: function() {
-      var gameId = Session.get('gameID');
+      var gameId;
+      if(Session.get('gameId')){
+        gameId = Session.get('gameId');
+      }else{
+        gameId = uuid.tiny();
+        Session.set('gameId',gameId);
+      }
       console.log(gameId);
       var currentUserId = Meteor.userId();
       var searchResult = GamesList.findOne({
         createdBy: currentUserId,
-        gameId: this.gameID
+        gameId: gameId
       }, {
         fields: {
           gameId: 1
         }
       });
-      console.log(searchResult);
+      //console.log(searchResult);
       return searchResult;
     }
   });
@@ -253,7 +260,7 @@ if (Meteor.isClient) {
       console.log('navigation logging currentUserId: ' + currentUserId);
       var searchResult = GamesList.findOne({
         createdBy: currentUserId,
-        gameId: this.gameID
+        gameId: this.gameId
       }, {
         fields: {
           gameTime: 1
@@ -262,19 +269,17 @@ if (Meteor.isClient) {
       console.log(searchResult);
       //return searchResult;
     }
-
-
   });
 
   Template.navigation.events({
     'click .new-game': function() {
-      var gameID = uuid.tiny();
-      Session.set('gameId', gameID)
+      var gameId = uuid.tiny();
+      Session.set('gameId', gameId)
       console.log(gameID);
       var currentUserId = Meteor.userId();
       timeNow = numeneraTimeLib.newGame();
       GamesList.insert({
-        gameId: gameID,
+        gameId: gameId,
         gameTime: timeNow,
         createdBy: currentUserId,
         currentWeather: 'night-sleet',
@@ -306,13 +311,11 @@ if (Meteor.isClient) {
       numeneraTimeLib.start();
       e.preventDefault(); // prevent the default anchor functionality
     },
-
     'click .travel-one-day': function(e) {
       numeneraTimeLib.addTime(28 * 60 * 60);
       numeneraTimeLib.start();
       e.preventDefault(); // prevent the default anchor functionality
     },
-
     'click .pass-the-time': function(e) {
       numeneraTimeLib.addTime();
       numeneraTimeLib.start();
@@ -323,24 +326,26 @@ if (Meteor.isClient) {
       timeDisplay = timeNow + counter;
       displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
       numeneraTimeLib.update(displayTime);
-
     },
-    'click .save-game-time': function() {
-      console.log("You clicked to save game.")
+    'click .save-game': function() {
         // Write seed time to mongo Games Collection
-      var currentUserId = Meteor.getId();
-      var currentTime = Session.get('timeValue');
-      //timeDisplay = numeneraTimeLib.fetchSavedGameTime();
-      console.log(timeDisplay);
+      var currentUserId = Meteor.userId();
+      var currentTime = Session.get('gameTime');
+      var currentGameId = Session.get('gameId');
+      console.log('attempt to save time: ' +currentTime);
+      console.log('in game: '+currentGameId);
+      console.log('by user: ' +currentUserId);
       GamesList.update({
         _id: this._id,
-        createdBy: currentUserId,
-        gameId: this.gameID
-      }, {
-        gameTime: currentTime
+        createdBy: currentUserId
+      },
+      {
+        $set: {
+          gameTime: timeDisplay
+        }
       });
     },
-    'click .resume-game-state': function() {
+    'click .resume-game': function() {
       //get seed value from Games Collection for this user;
       console.log("You clicked to resume a previous game.")
       seed = timeDisplay;
@@ -351,8 +356,6 @@ if (Meteor.isClient) {
       //displayTime = numeneraTimeLib.convertToDisplay(timeNow);
       //numeneraTimeLib.update(displayTime);
     }
-
-
   });
 }
 
