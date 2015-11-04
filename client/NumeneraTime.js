@@ -1,7 +1,3 @@
-
-
-
-
 if (Meteor.isClient) {
   // counter starts at 0
 
@@ -115,7 +111,7 @@ if (Meteor.isClient) {
         timeDisplay = timeNow + counter;
         displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
         numeneraTimeLib.update(displayTime);
-        Session.set('gameTime',timeDisplay);
+        Session.set('gameTime', timeDisplay);
       }
     },
 
@@ -123,19 +119,25 @@ if (Meteor.isClient) {
       var gameId;
       var timeSeed;
       var recordId;
-      if(Meteor.userId()){
+      if (Meteor.userId()) {
         gameInfo = GamesList.findOne({
           createdBy: Meteor.userId()
-        }, {fields: {gameId: 1, gameTime: 1, currentWeather: 1, joinedPlayers: 1}
-      });
-      gameId = gameInfo.gameId;
-      timeSeed = gameInfo.gameTime;
-      Session.set('gameId', gameId);
-      Session.set('gameTime', timeSeed);
-      seed = timeSeed;
-      //console.log('seed value: '+seed);
-      timeNow = numeneraTimeLib.timeConstruct(seed);
-      }else{
+        }, {
+          fields: {
+            gameId: 1,
+            gameTime: 1,
+            currentWeather: 1,
+            joinedPlayers: 1
+          }
+        });
+        gameId = gameInfo.gameId;
+        timeSeed = gameInfo.gameTime;
+        Session.set('gameId', gameId);
+        Session.set('gameTime', timeSeed);
+        seed = timeSeed;
+        //console.log('seed value: '+seed);
+        timeNow = numeneraTimeLib.timeConstruct(seed);
+      } else {
         seed = 0;
         timeNow = numeneraTimeLib.timeConstruct(n);
       }
@@ -144,7 +146,7 @@ if (Meteor.isClient) {
       intervalHandler = Meteor.setInterval(
         numeneraTimeLib.count,
         intervalModifier);
-        console.log('time at end of init: ' +timeNow);
+      console.log('time at end of init: ' + timeNow);
       return timeNow;
     },
 
@@ -221,11 +223,11 @@ if (Meteor.isClient) {
   Template.gameID.helpers({
     gameID: function() {
       var gameId;
-      if(Session.get('gameId')){
+      if (Session.get('gameId')) {
         gameId = Session.get('gameId');
-      }else{
+      } else {
         gameId = uuid.tiny();
-        Session.set('gameId',gameId);
+        Session.set('gameId', gameId);
       }
       console.log(gameId);
       var currentUserId = Meteor.userId();
@@ -321,18 +323,17 @@ if (Meteor.isClient) {
       numeneraTimeLib.update(displayTime);
     },
     'click .save-game': function() {
-        // Write seed time to mongo Games Collection
+      // Write seed time to mongo Games Collection
       var currentUserId = Meteor.userId();
       var currentTime = Session.get('gameTime');
       var currentGameId = Session.get('gameId');
-      console.log('attempt to save time: ' +currentTime);
-      console.log('in game: '+currentGameId);
-      console.log('by user: ' +currentUserId);
+      console.log('attempt to save time: ' + currentTime);
+      console.log('in game: ' + currentGameId);
+      console.log('by user: ' + currentUserId);
       GamesList.update({
         _id: this._id,
         createdBy: currentUserId
-      },
-      {
+      }, {
         $set: {
           gameTime: timeDisplay
         }
