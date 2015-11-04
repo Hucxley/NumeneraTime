@@ -1,5 +1,5 @@
-GamesList = new Mongo.Collection('savedGames');
-WeatherStates = new Mongo.Collection('weatherStates'); // https://erikflowers.github.io/weather-icons/
+
+
 
 
 if (Meteor.isClient) {
@@ -245,13 +245,6 @@ if (Meteor.isClient) {
   Template.clock.destroyed = function() {
     Meteor.clearInterval(intervalHandler);
   };
-
-
-  Template.weather.helpers({
-    weather: function() {
-      //do stuff with weather.
-    }
-  });
 
   Template.navigation.helpers({
     currentGameTime: function() {

@@ -1,0 +1,19 @@
+<head>
+    <title>Numenera Weather App</title>
+</head>
+
+<body>
+  <div script="../client/libs/timerReference.js"></div>
+    <div class="container-fluid">
+      <div class="jumbotron">
+        <h1>Numenera Weather Information</h1>
+        <div class="weather-display">
+          <span class="inline"> {{>clock}} {{>weather}}</span>
+        </div>
+        {{>loginButtons}}  GameID: {{>gameID}}
+      </div>
+    </div>
+    <div class="container-fluid">
+      {{>navigation}}
+    </div>
+</body>

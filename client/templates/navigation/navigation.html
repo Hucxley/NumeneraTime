@@ -1,34 +1,3 @@
-<head>
-    <title>Numenera Weather App</title>
-</head>
-
-<body>
-  <div script="../client/libs/timerReference.js"></div>
-    <div class="container-fluid">
-      <div class="jumbotron">
-        <h1>Numenera Weather Information</h1>
-        <div class="weather-display">
-          <span class="inline"> {{>clock}} {{>weather}}</span>
-        </div>
-        {{>loginButtons}}  GameID: {{>gameID}}
-      </div>
-    </div>
-    <div class="container-fluid">
-      {{>navigation}}
-    </div>
-</body>
-
-<template name="gameID">
-  <span class="gameID-display">{{gameID.gameId}}</span>
-</template>
-
-<template name="clock">
-  <!-- Content display for timer -->
-  <div class="calendar-display dark-stroke" id="timeKeeper">
-        <h2>{{time}}</h2>
-  </div>
-</template>
-
 <template name="navigation">
   <!-- Button group -->
   <div class="nav navbar">
@@ -48,10 +17,4 @@
       </div><!-- /btn-group -->
       <button type="button" class="btn btn-danger save-game">Save Game</button>
   </div>
-</template>
-
-
-<template name="weather">
-  <h2><i class="wi wi-night-sleet"></i></h2>
-
 </template>
