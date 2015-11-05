@@ -127,7 +127,7 @@ if (Meteor.isClient) {
           gameId: "DEMO",
           gameTime: numeneraTimeLib.timeConstruct(),
           createdBy: "DemoUser",
-          currentWeather: 'night-sleet',
+          currentWeather: Session.get('weatherCode'),
           joinedPlayers: []
         }
       }
@@ -166,7 +166,7 @@ if (Meteor.isClient) {
           gameId: uuid.tiny(),
           gameTime: numeneraTimeLib.timeConstruct(),
           createdBy: currentUserId,
-          currentWeather: 'night-sleet',
+          currentWeather: Session.get('weatherCode'),
           joinedPlayers: []
         })
       };
@@ -244,30 +244,6 @@ if (Meteor.isClient) {
     },
   });
 
-  Template.gameId.helpers({
-    gameId: function() {
-      var gameId;
-      if (Session.get('gameId')) {
-        gameId = Session.get('gameId');
-      } else {
-        gameId = uuid.tiny();
-        Session.set('gameId', gameId);
-      }
-      console.log(gameId);
-      var currentUserId = Meteor.userId();
-      var searchResult = GamesList.findOne({
-        createdBy: currentUserId,
-        gameId: gameId
-      }, {
-        fields: {
-          gameId: 1
-        }
-      });
-      //console.log(searchResult);
-      return searchResult;
-    }
-  });
-
   Template.clock.destroyed = function() {
     Meteor.clearInterval(intervalHandler);
   };
@@ -301,7 +277,7 @@ if (Meteor.isClient) {
         gameId: gameId,
         gameTime: timeNow,
         createdBy: currentUserId,
-        currentWeather: 'night-sleet',
+        currentWeather: Session.get('weatherCode'),
         joinedPlayers: []
       })
     },
