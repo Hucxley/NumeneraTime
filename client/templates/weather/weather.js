@@ -1,12 +1,17 @@
 //temporary random icon selector to test weather simulation matching from live APIs
-var randomCode = Math.floor(Math.random() * 26 + 1);
-console.log("generated randomCode: " + randomCode);
+var weatherCode = Math.floor(Math.random() * 26 + 1);
+console.log("generated randomCode: " + weatherCode);
 
 Template.weather.helpers({
   icon: function() {
-    Session.set('weatherCode', randomCode.toString());
+    if(Meteor.userId()){
+      var gameInfo = Session.get('gameInfo');
+      weatherCode = gameInfo.currentWeather;
+      console.log('randomWeather overwritten by saved weather state: ' +weatherCode);
+    }
+    Session.set('weatherCode', weatherCode.toString());
     return "wi wi-" + WeatherStates.findOne({
-      code: randomCode.toString()
+      code: weatherCode.toString()
     }, {
       icon: 1
     }).icon;

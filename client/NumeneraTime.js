@@ -133,6 +133,7 @@ if (Meteor.isClient) {
       }
       gameId = gameInfo.gameId;
       timeSeed = gameInfo.gameTime;
+      Session.set('gameInfo',gameInfo);
       Session.set('gameId', gameId);
       Session.set('gameTime', timeSeed);
       timeNow = numeneraTimeLib.timeConstruct(timeSeed);
@@ -177,7 +178,11 @@ if (Meteor.isClient) {
     newGame: function() {
       if (typeof(intervalHandler) !== 'undefined') {
         clearInterval(intervalHandler);
-      }
+      }else if(GamesList.findOne({
+        createdBy: currentUserId},{fields:{gameId:1}
+      })){
+        GamesList.remove(GamesList.findOne({createdBy: currentUserId},{}))
+      };
       timeNow = numeneraTimeLib.initAttributes();
       displayTime = numeneraTimeLib.convertToDisplay(timeNow);
       numeneraTimeLib.update(displayTime);
