@@ -4,7 +4,7 @@ if (Meteor.isClient) {
   var timeDep = new Deps.Dependency(); // !!!
   var timeValue;
   var timeInterval;
-  var gameID;
+  var gameId;
   var counter = 0;
   var isActive = false;
   var intervalModifier;
@@ -16,9 +16,9 @@ if (Meteor.isClient) {
   var displayTime;
 
   var numeneraTimeLib = {
-    addRound: function(n) {
+    addRound: function() {
 
-      counter += (n * 6);
+      counter += (6);
       timeDisplay = timeNow + counter;
       displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
       numeneraTimeLib.update(displayTime);
@@ -119,28 +119,23 @@ if (Meteor.isClient) {
       var gameId;
       var timeSeed;
       var recordId;
+      //console.log('seed value: '+seed);
       if (Meteor.userId()) {
-        gameInfo = GamesList.findOne({
-          createdBy: Meteor.userId()
-        }, {
-          fields: {
-            gameId: 1,
-            gameTime: 1,
-            currentWeather: 1,
-            joinedPlayers: 1
-          }
-        });
-        gameId = gameInfo.gameId;
-        timeSeed = gameInfo.gameTime;
-        Session.set('gameId', gameId);
-        Session.set('gameTime', timeSeed);
-        seed = timeSeed;
-        //console.log('seed value: '+seed);
-        timeNow = numeneraTimeLib.timeConstruct(seed);
+        gameInfo = numeneraTimeLib.manageGames();
       } else {
-        seed = 0;
-        timeNow = numeneraTimeLib.timeConstruct(n);
+        gameInfo = {
+          gameId: "DEMO",
+          gameTime: numeneraTimeLib.timeConstruct(),
+          createdBy: "DemoUser",
+          currentWeather: 'night-sleet',
+          joinedPlayers: []
+        }
       }
+      gameId = gameInfo.gameId;
+      timeSeed = gameInfo.gameTime;
+      Session.set('gameId', gameId);
+      Session.set('gameTime', timeSeed);
+      timeNow = numeneraTimeLib.timeConstruct(timeSeed);
       intervalModifier = 1000;
       pmFlag = false;
       intervalHandler = Meteor.setInterval(
@@ -148,6 +143,35 @@ if (Meteor.isClient) {
         intervalModifier);
       console.log('time at end of init: ' + timeNow);
       return timeNow;
+    },
+
+    manageGames: function() {
+      var gameId;
+      var gameInfo;
+      var currentUserId = Meteor.userId();
+      if (GamesList.findOne({
+          createdBy: Meteor.userId()
+        }, {
+          fields: {
+            gameId: 1
+          }
+        })) {
+        gameInfo = GamesList.findOne({
+          createdBy: Meteor.userId()
+        }, {
+          fields: {}
+        })
+      } else {
+        gameInfo = GamesList.insert({
+          gameId: uuid.tiny(),
+          gameTime: numeneraTimeLib.timeConstruct(),
+          createdBy: currentUserId,
+          currentWeather: 'night-sleet',
+          joinedPlayers: []
+        })
+      };
+      console.log(gameInfo);
+      return gameInfo;
     },
 
     newGame: function() {
@@ -220,8 +244,8 @@ if (Meteor.isClient) {
     },
   });
 
-  Template.gameID.helpers({
-    gameID: function() {
+  Template.gameId.helpers({
+    gameId: function() {
       var gameId;
       if (Session.get('gameId')) {
         gameId = Session.get('gameId');
@@ -270,7 +294,7 @@ if (Meteor.isClient) {
     'click .new-game': function() {
       var gameId = uuid.tiny();
       Session.set('gameId', gameId)
-      console.log(gameID);
+      console.log(gameId);
       var currentUserId = Meteor.userId();
       timeNow = numeneraTimeLib.newGame();
       GamesList.insert({
@@ -302,22 +326,24 @@ if (Meteor.isClient) {
       numeneraTimeLib.pauseCounter();
     },
     'click .travel-half-day': function(e) {
+      e.preventDefault(); // prevent the default anchor functionality
       numeneraTimeLib.addTime(14 * 60 * 60);
       numeneraTimeLib.start();
-      e.preventDefault(); // prevent the default anchor functionality
     },
     'click .travel-one-day': function(e) {
+      e.preventDefault(); // prevent the default anchor functionality
       numeneraTimeLib.addTime(28 * 60 * 60);
       numeneraTimeLib.start();
-      e.preventDefault(); // prevent the default anchor functionality
     },
     'click .pass-the-time': function(e) {
-      numeneraTimeLib.addTime();
-      numeneraTimeLib.start();
       e.preventDefault(); // prevent the default anchor functionality
+      var randomTimeValue = Math.floor(Math.random() * 50400 + 1);
+      numeneraTimeLib.addTime(randomTimeValue);
+      numeneraTimeLib.start();
+
     },
-    'click .add-combat-round': function(n) {
-      counter += (n * 6);
+    'click .add-combat-round': function() {
+      counter += 6;
       timeDisplay = timeNow + counter;
       displayTime = numeneraTimeLib.convertToDisplay(timeDisplay);
       numeneraTimeLib.update(displayTime);

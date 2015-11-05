@@ -1,14 +1,12 @@
 if (WeatherStates.find().count() === 0) {
-  WeatherStates.insert(
-  {
+  WeatherStates.insert({
     index: 1,
     code: "1",
     temp: 46,
     description: "day cloudy high",
     icon: "day-cloudy-high"
   });
-  WeatherStates.insert(
-   {
+  WeatherStates.insert({
     index: 2,
     code: "2",
     temp: 102,
@@ -96,8 +94,8 @@ if (WeatherStates.find().count() === 0) {
     index: 14,
     code: "14",
     temp: 10,
-    description: "humidity",
-    icon: "humidity"
+    description: "na",
+    icon: "na"
   });
   WeatherStates.insert({
     index: 15,
@@ -113,70 +111,70 @@ if (WeatherStates.find().count() === 0) {
     description: "flood",
     icon: "flood"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 17,
     code: "17",
     temp: 43,
     description: "sandstorm",
     icon: "sandstorm"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 18,
     code: "18",
     temp: 34,
     description: "tsunami",
     icon: "tsunami"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 19,
     code: "19",
     temp: 101,
     description: "earthquake",
     icon: "earthquake"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 20,
     code: "20",
     temp: 101,
     description: "fire",
     icon: "fire"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 21,
     code: "21",
     temp: 6,
     description: "volcano",
     icon: "volcano"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 22,
     code: "22",
     temp: 90,
     description: "train",
     icon: "train"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 23,
     code: "23",
     temp: 97,
     description: "small craft advisory",
     icon: "small-craft-advisory"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 24,
     code: "24",
     temp: 32,
     description: "gale warning",
     icon: "gale-warning"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 25,
     code: "25",
     temp: 9,
     description: "storm warning",
     icon: "storm-warning"
   });
-WeatherStates.insert({
+  WeatherStates.insert({
     index: 26,
     code: "26",
     temp: 63,

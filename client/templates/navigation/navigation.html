@@ -1,26 +1,24 @@
 <template name="navigation">
   <!-- Button group -->
   <div class="nav navbar">
-      <button type="button" class="btn btn-primary resume-game-state" >Resume Game</button>
-      <button type="button" class="btn btn-default new-game">New Game</button>
-      <button type="button" class="btn btn-success start-clock">Start Game</button>
-      <button type="button" class="btn btn-warning pause-clock">Pause Game</button>
-      <button type="button" class="btn btn-info add-combat-round" onclick="addRound(1)">Add 1 Combat Round</button>
-      <button type="button" class="btn btn-info toggle-travel-time">Toggle Travel Time</button>
-      <button type="button" class="btn btn-default new-game">New Game</button>
-      <button type="button" class="btn btn-primary resume-game" >Resume Game</button>
-      <button type="button" class="btn btn-success start-clock">Start Game</button>
-      <button type="button" class="btn btn-warning pause-clock">Pause Game</button>
-      <button type="button" class="btn btn-info add-combat-round" onclick="addRound(1)">Add 1 Combat Round</button>
-      <div class="btn-group">
-          <button class="btn dropdown-toggle btn-info" data-toggle="dropdown">Quick Time <span class="caret"></span></button>
-          <ul class="dropdown-menu">
-              <li><a href="#" class="toggle-travel-time">Toggle Travel Time</a></li>
-              <li><a href="#" class="travel-half-day">Half-day Travel</a></li>
-              <li><a href="#" class="travel-one-day">One day's Travel</a></li>
-              <li><a href="#" class="pass-the-time">Pass the Time</a></li>
-          </ul>
-      </div><!-- /btn-group -->
-      <button type="button" class="btn btn-danger save-game">Save Game</button>
+    <button type="button" class="btn btn-primary resume-game-state">Resume Game</button>
+    <button type="button" class="btn btn-default new-game">New Game</button>
+    <button type="button" class="btn btn-success start-clock">Start Game</button>
+    <button type="button" class="btn btn-warning pause-clock">Pause Game</button>
+    <button type="button" class="btn btn-info add-combat-round">Add 1 Combat Round</button>
+    <div class="btn-group">
+      <button class="btn dropdown-toggle btn-info" data-toggle="dropdown">
+        Quick Time<span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a href="#" class="toggle-travel-time">Toggle Travel Time</a></li>
+        <li><a href="#" class="travel-half-day">Half-day Travel</a></li>
+        <li><a href="#" class="travel-one-day">One day's Travel</a></li>
+        <li><a href="#" class="pass-the-time">Pass the Time</a></li>
+      </ul>
+    </div>
+    <!-- /btn-group -->
+    <button type="button" class="btn btn-danger save-game">Save Game</button>
   </div>
+  <!-- /btn-group -->
 </template>
